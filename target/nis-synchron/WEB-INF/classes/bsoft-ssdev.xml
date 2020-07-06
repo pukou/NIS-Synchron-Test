@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ssdev="http://www.bsoft.com.cn/schema/ssdev"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.bsoft.com.cn/schema/ssdev
+				http://www.bsoft.com.cn/schema/ssdev/ssdev.xsd">
+
+
+	<!--注册zookeeper应用域-->
+	<ssdev:applicationDomain name="nis-synchron" registryAddress="zookeeper://127.0.0.1:2181"/>
+
+	<!--对外提供服务地址和协议-->
+	<ssdev:connector url="tcp://0.0.0.0:9002?codec=hessian">
+	</ssdev:connector>
+
+	<!--对外提供的服务列表-->
+	<ssdev:service id="synchronRpcServerProvider" class="com.bsoft.nis.service.synchron.SynchronRpcServerProvider"/>
+</beans>

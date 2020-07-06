@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.bsoft.mobile:BS-NIS-Core:5.6.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../INER/ienrmaven/maven/mvn-res/com/bsoft/mobile/BS-NIS-Core/5.6.0.1-SNAPSHOT/BS-NIS-Core-5.6.0.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../INER/ienrmaven/maven/mvn-res/com/bsoft/mobile/BS-NIS-Core/5.6.0.1-SNAPSHOT/BS-NIS-Core-5.6.0.1-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../INER/ienrmaven/maven/mvn-res/com/bsoft/mobile/BS-NIS-Core/5.6.0.1-SNAPSHOT/BS-NIS-Core-5.6.0.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

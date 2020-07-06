@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <!--如果不定义webAppRootKey参数，那么webAppRootKey就是缺省的"webapp.root"。 但最好设置，以免项目之间的名称冲突。定义以后，在Web
+        Container启动时将把ROOT的绝对路径写到系统变量里。 然后log4j的配置文件里就可以用${neobabyAdmin.root }来表示Web目录的绝对路径，把log文件存放于webapp中。此参数用于后面的“Log4jConfigListener” -->
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>nis-synchron.root</param-value>
+    </context-param>
+
+    <!--Spring默认刷新Log4j配置文件的间隔,单位为millisecond -->
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>6000</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+
+    <!--由Spring载入的Log4j配置文件位置 -->
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:springContext-*.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- 配置文件Servlet -->
+    <!--<servlet>
+        <servlet-name>AutoRunServlet</servlet-name>
+        <servlet-class>com.bsoft.mobile.ienm.servlet.AutoRunServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>-->
+
+    <!-- 配置文件Servlet -->
+    <servlet>
+        <servlet-name>systemConfigServlet</servlet-name>
+        <servlet-class>com.bsoft.nis.core.config.drive.ConfigDriver</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- 配置文件Servlet -->
+    <servlet>
+        <servlet-name>databaseServlet</servlet-name>
+        <servlet-class>com.bsoft.nis.core.datasource.drive.DatabaseDriver</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Spring mvc -->
+    <servlet>
+        <servlet-name>NISServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc-servlet.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>dispatchOptionsRequest</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+        <!-- 让 servlet 支持异步请求-->
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NISServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+    <!-- ===================================================================
+        - Filters - =================================================================== -->
+    <!--spring secutity -->
+    <!-- <filter>
+         <filter-name>springSecurityFilterChain</filter-name>
+         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+         <async-supported>true</async-supported>
+     </filter>
+
+     <filter-mapping>
+         <filter-name>springSecurityFilterChain</filter-name>
+         <url-pattern>/*</url-pattern>
+         <dispatcher>REQUEST</dispatcher>
+        &lt;!&ndash; <dispatcher>ASYNC</dispatcher>&ndash;&gt;
+     </filter-mapping>-->
+
+    <!--session redis统一管理-->
+    <filter>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <!-- filter for spring -->
+    <filter>
+        <filter-name>encoding-filter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encoding-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--移动终端过滤器-->
+    <filter>
+        <filter-name>mobile-auth-filter</filter-name>
+        <filter-class>com.bsoft.nis.core.filter.MTRequestFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>mobile-auth-filter</filter-name>
+        <url-pattern>/auth/mobile/*</url-pattern>
+    </filter-mapping>
+
+
+
+    <!--欢迎页面-->
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>

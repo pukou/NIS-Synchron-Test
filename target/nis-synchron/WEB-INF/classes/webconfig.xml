@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs xmlns="http://www.bsoft.com.cn/nis/schema/config"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.bsoft.com.cn/nis/schema/config
+                             http://www.bsoft.com.cn/nis/schema/config/nisconfig.xsd">
+    <!--系统参数配置
+        1.系统参数配置都以key-value的格式书写 key：元素名；value：元素属性value的值
+        2.使用方式：调用BS-NIS-CORE包中的ConfigHandler.getSystemConfig(String key)
+    -->
+    <system>
+        <!--多机构判断，1 多机构 0 单机构-->
+        <organization value="1"></organization>
+    </system>
+
+    <!--执行流程组控制
+        1.执行流程包含，医嘱执行流程控制，等...
+        2.使用方法：
+    -->
+    <flowGroups>
+        <flowGroup  remark="医嘱执行流程控制" id="adviceExcuteFlow">
+            <flow flowName="adviceFlow_1" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.AdviceGeneralCheck" flowRemark="医嘱校验"/>
+            <flow flowName="adviceFlow_2" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.CommonControl" flowRemark="医嘱校验"/>
+            <flow flowName="adviceFlow_3" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.DoubleCheckControl" flowRemark="医嘱校验"/>
+            <flow flowName="adviceFlow_4" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.SkinTestCheck" flowRemark="医嘱校验"/>
+            <flow flowName="adviceFlow_5" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.InjectionDosingCheck" flowRemark="医嘱校验"/>
+            <flow flowName="adviceFlow_6" flowHandlerClass="com.bsoft.nis.adviceexecute.FlowControl.TransfusionGeneralCheck" flowRemark="医嘱校验"/>
+        </flowGroup>
+    </flowGroups>
+
+</configs>

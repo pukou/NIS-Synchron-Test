@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <!-- ========================= DATASOURCE DEFINITION ========================= -->
+
+    <!-- Configurer that replaces ${...} placeholders with values from a properties
+        file -->
+    <!-- (in this case, JDBC-related settings for the dataSource definition
+        below) -->
+
+    <!-- 不加密
+         此处数据库配置文件名修改必须和<propertyConfigurer> 中Location 一同修改
+    -->
+    <context:property-placeholder location="classpath:jdbc_ora.properties"/>
+
+    <!--database properties-->
+    <bean id="propertyConfigurer" class="com.bsoft.nis.core.datasource.DataBasePropertyPlaceholder">
+        <property name="location">
+            <value>classpath:jdbc_ora.properties</value>
+        </property>
+    </bean>
+
+    <!-- 加密时候使用 -->
+    <!-- <bean id="propertyConfig" class="com.bsoft.mobile.hlgl.core.security.PropertyPlaceholderConfigurerExt">
+        <property name="locations"> <list> <value>classpath:jdbc.properties</value>
+        </list> </property> </bean> -->
+
+    <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close" abstract="true">
+        <!-- 基本属性 url、user、password、driverclass -->
+        <!-- <property name="url" value="${dataSource.url}" /> <property name="username"
+            value="${dataSource.username}" /> <property name="password" value="${dataSource.password}"
+            /> -->
+       <!-- <property name="driverClassName" value="${dataSource.driverClassName}"/>-->
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="${druid.initialSize}"/>
+        <property name="minIdle" value="${druid.minIdle}"/>
+        <property name="maxActive" value="${druid.maxActive}"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="${druid.maxWait}"/>
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}"/>
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}"/>
+
+        <!-- sql server 注释掉 -->
+        <!-- <property name="validationQuery" value="${druid.validationQuery}" /> -->
+        <property name="testWhileIdle" value="${druid.testWhileIdle}"/>
+
+
+        <property name="testOnBorrow" value="${druid.testOnBorrow}"/>
+        <property name="testOnReturn" value="${druid.testOnReturn}"/>
+
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <!-- 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false。 -->
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${druid.maxPoolPreparedStatementPerConnectionSize}"/>
+
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="${druid.filters}"/>
+
+        <!-- 每5分钟输出一次统计日志 -->
+        <property name="timeBetweenLogStatsMillis" value="300000"/>
+    </bean>
+
+    <!-- 连接移动MOB库 -->
+    <bean id="mobDataSource" parent="parentDataSource">
+        <property name="url" value="${mob.url}"/>
+        <property name="username" value="${mob.username}"/>
+        <property name="password" value="${mob.password}"/>
+        <property name="driverClassName" value="${mob.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${mob.validationQuery}"/>
+    </bean>
+
+    <!-- 连接enr库 -->
+    <bean id="enrDataSource" parent="parentDataSource">
+        <property name="url" value="${enr.url}"/>
+        <property name="username" value="${enr.username}"/>
+        <property name="password" value="${enr.password}"/>
+        <property name="driverClassName" value="${enr.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${enr.validationQuery}"/>
+    </bean>
+
+    <!-- 连接emr库 -->
+    <bean id="emrDataSource" parent="parentDataSource">
+        <property name="url" value="${emr.url}"/>
+        <property name="username" value="${emr.username}"/>
+        <property name="password" value="${emr.password}"/>
+        <property name="driverClassName" value="${emr.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${emr.validationQuery}"/>
+    </bean>
+
+    <!-- 连接lis库 -->
+    <bean id="lisDataSource" parent="parentDataSource">
+        <property name="url" value="${lis.url}"/>
+        <property name="username" value="${lis.username}"/>
+        <property name="password" value="${lis.password}"/>
+        <property name="driverClassName" value="${lis.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${lis.validationQuery}"/>
+    </bean>
+
+    <!-- 连接lis库 -->
+    <bean id="risDataSource" parent="parentDataSource">
+        <property name="url" value="${ris.url}"/>
+        <property name="username" value="${ris.username}"/>
+        <property name="password" value="${ris.password}"/>
+        <property name="driverClassName" value="${ris.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${ris.validationQuery}"/>
+    </bean>
+
+    <!-- 连接BSHRP库 -->
+    <bean id="hrpDataSource" parent="parentDataSource">
+        <property name="url" value="${hrp.url}"/>
+        <property name="username" value="${hrp.username}"/>
+        <property name="password" value="${hrp.password}"/>
+        <property name="driverClassName" value="${hrp.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${hrp.validationQuery}"/>
+    </bean>
+
+    <!-- 连接portal库 -->
+    <bean id="portalDataSource" parent="parentDataSource">
+        <property name="url" value="${portal.url}"/>
+        <property name="username" value="${portal.username}"/>
+        <property name="password" value="${portal.password}"/>
+        <property name="driverClassName" value="${portal.driverClassName}"/>
+        <!--sqlserver 下注释掉-->
+        <property name="validationQuery" value="${portal.validationQuery}"/>
+    </bean>
+
+    <bean id="dataSource"
+          class="com.bsoft.nis.core.datasource.MultiRoutingDataSource">
+        <property name="targetDataSources">
+            <map key-type="com.bsoft.nis.core.datasource.DataSource">
+                <entry key="MOB" value-ref="mobDataSource"/>
+                <entry key="HRP" value-ref="hrpDataSource"/>
+                <entry key="PORTAL" value-ref="portalDataSource"/>
+                <entry key="ENR" value-ref="enrDataSource"/>
+                <entry key="EMR" value-ref="emrDataSource"/>
+                <entry key="LIS" value-ref="lisDataSource"/>
+                <entry key="RIS" value-ref="risDataSource"/>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="mobDataSource"/>
+    </bean>
+
+
+    <!-- enable transaction demarcation with annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- enable autowire -->
+    <context:annotation-config/>
+
+    <!-- transaction manager, use JtaTransactionManager for global tx -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- define the SqlSessionFactory,use short aliases for beans -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.bsoft.nis.domain"/>
+        <property name="databaseIdProvider" ref="databaseIdProvider"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+
+    <!-- scan for mappers and let them be autowired -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.bsoft.nis.mapper;com.bsoft.nis.common.servicesup.mapper"/>
+    </bean>
+
+    <!-- mybatis multi-db feature -->
+    <bean id="vendorProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="SQL Server">sqlserver</prop>
+                <prop key="Oracle">oracle</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+        <property name="properties" ref="vendorProperties"/>
+    </bean>
+
+</beans>

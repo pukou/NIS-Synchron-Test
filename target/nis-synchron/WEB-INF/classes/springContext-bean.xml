@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- Enable annotation configuration -->
+	<context:annotation-config />
+
+	<!--对bean包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.domain" />
+
+	<!--对service包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.service" />
+
+	<!--对service包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.common.service" />
+
+	<!--对service包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.common.servicesup.support" />
+
+	<!--对RPC包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.rpc.server" />
+
+	<!--对Core包中dictionary的需spring管理的类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.core.dictionary" />
+
+	<!--对Core包中dictionary的需spring管理的类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.bsoft.nis.core.cached" />
+
+	<aop:aspectj-autoproxy />
+
+	<!--mybatis-->
+	<import resource="classpath:spring-mybatis.xml"></import>
+
+	<!--平台rpc服务配置-->
+	<import resource="classpath:bsoft-ssdev.xml" />
+
+	<!--redis配置-->
+	<import resource="spring-redis.xml"/>
+</beans>

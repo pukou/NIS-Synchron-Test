@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bsoft.nis.mapper.synchron.SynchronServiceMapper">
+
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+	<select id="getSynchronByBQDMAndBdlx" flushCache="false" useCache="true" resultMap="synchronRulesMap">
+		SELECT DZ.DZXH, DZ.BQDM, DZ.TBXH, DZ.JGID, FS.TBMS, FS.TBGZ, FS.DZLX,
+			   FS.BDLX, FS.LYBD, FS.MBLX, FS.MBBDMC, FS.MBBD, FS.ZTBZ
+		FROM IENR_TBFSDZ DZ, IENR_TBFS FS
+		WHERE FS.TBXH = DZ.TBXH AND DZ.JGID = #{JGID} AND DZ.BQDM = #{BQDM} AND
+			  FS.BDLX = #{BDLX} AND FS.LYBD = #{LYBD} AND FS.ZTBZ = 2
+	</select>
+
+	<resultMap id="synchronRulesMap" type="Synchron">
+		<id column="TBXH" property="TBXH"/>
+		<association property="missionProjects" select="selectMissionProjects" column="TBXH" javaType="list"/>
+	</resultMap>
+
+	<select id="selectMissionProjects" flushCache="false" useCache="true" resultMap="synchronMissionsMap">
+		SELECT MBXH, TBXH, MBXM, MBXMMC, PLSX, ZFBZ
+		FROM IENR_TBMB
+		WHERE TBXH = #{TBXH} ORDER BY PLSX ASC
+	</select>
+
+	<resultMap id="synchronMissionsMap" type="SynchronMission">
+		<id column="MBXH" property="MBXH"/>
+		<association property="missionSources" select="selectMissionSources" column="MBXH" javaType="list"/>
+	</resultMap>
+
+	<select id="selectMissionSources" flushCache="false" useCache="true" resultType="SynchronSource">
+		SELECT MXXH, MBXH, TBXH, SJLX, XMLX, LYXM, LYXMMC, JTNR, PLSX
+		FROM IENR_TBMBLY
+		WHERE MBXH = #{MBXH}
+		ORDER BY PLSX ASC
+	</select>
+
+    <!-- JLZT != 9 -->
+	<select id="getLastNurseRecordOfPatient" resultType="map" useCache="true" flushCache="false" >
+		SELECT JGBH
+		FROM ENR_JL01
+		WHERE JLBH = (SELECT MAX(JLBH) FROM ENR_JL01 WHERE JLZT = 0 AND ZYH = #{ZYH})
+	</select>
+
+	<select id="getSynchronRecordsByLylxAndLyjl" resultType="SynchronRecord" flushCache="true">
+		SELECT JLXH, JLSJ, LYLX, LYJL, MBLX, MBJL, JGID, LYMX, LYMXLX
+		FROM IENR_TBJL
+		WHERE LYLX = #{LYLX} AND LYJL = #{LYJL}
+			  <if test="LYMXLX != '0'">
+				  AND LYMXLX = #{LYMXLX} AND LYMX = #{LYMX}
+			  </if>
+	</select>
+
+	<insert id="insertSynchronRecord" parameterType="SynchronRecord" flushCache="true">
+		<if test="dbtype == 'sqlserver'">
+			INSERT INTO IENR_TBJL
+			(JLXH, JLSJ, LYLX, LYJL, MBLX, MBJL, JGID, LYMX, LYMXLX)
+			VALUES
+			(#{JLXH}, #{JLSJ}, #{LYLX}, #{LYJL}, #{MBLX}, #{MBJL}, #{JGID}, #{LYMX}, #{LYMXLX})
+		</if>
+		<if test="dbtype == 'oracle'">
+			INSERT INTO IENR_TBJL
+			(JLXH, JLSJ, LYLX, LYJL, MBLX, MBJL, JGID, LYMX, LYMXLX)
+			VALUES
+			(#{JLXH}, to_date(#{JLSJ}, 'yyyy-mm-dd hh24:mi:ss'), #{LYLX}, #{LYJL},
+			 #{MBLX}, #{MBJL}, #{JGID}, #{LYMX}, #{LYMXLX})
+		</if>
+	</insert>
+
+	<select id="getJlbhFromJlmx" resultType="java.lang.String" flushCache="true">
+		SELECT DISTINCT JLBH, MXBH
+		FROM ENR_JL02
+		WHERE LYBD = #{BDLX} AND LYBH = #{JLXH}
+	</select>
+
+	<select id="getJlbhFromJlmxByLymxlx" resultType="java.lang.String" flushCache="true">
+		SELECT DISTINCT JLBH, MXBH
+		FROM ENR_JL02
+		WHERE LYBD = #{BDLX} AND LYBH = #{JLXH} AND LYMX = #{LYMX} AND LYMXLX = #{LYMXLX}
+	</select>
+
+	<select id="getPatientNameByZyh" resultType="map" flushCache="true">
+		SELECT ZYH,BRXM FROM V_MOB_HIS_BRRY WHERE ZYH = #{ZYH}
+	</select>
+</mapper>

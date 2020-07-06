@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd"
+	>
+
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <!-- ①：启动Spring的注解功能，完成请求和注解POJO的映射 ，对相关包中的注解类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
+    <context:component-scan base-package="com.bsoft.nis.controller" />
+
+    <!-- ②：对模型视图名称的解析，即在模型视图名称添加前后缀(当前用Spring mobile进行管理) -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!-- i18n国际化配置 ，暂不考虑 -->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource"
+          p:basename="messages"/>
+
+    <!-- 配置拦截器，实现Spring mobile、机构ID转换等功能 -->
+    <!--<mvc:interceptors>
+         Resolve the device which has generated the request
+        <bean
+                class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor"/>
+        &lt;!&ndash; User's site preference &ndash;&gt;
+        &lt;!&ndash;<bean&ndash;&gt;
+                &lt;!&ndash;class="org.springframework.mobile.device.site.SitePreferenceHandlerInterceptor"/>&ndash;&gt;
+
+        &lt;!&ndash; 机构对照拦截器 &ndash;&gt;
+        <mvc:interceptor>
+            <mvc:mapping path="/auth/**"/>
+            <bean class="com.bsoft.mobile.ienm.interceptor.OrganizationInterceptor"></bean>
+        </mvc:interceptor>
+        
+        &lt;!&ndash; 增加mobile端登录验证拦截器 &ndash;&gt;
+        <mvc:interceptor>
+        	<mvc:mapping path="/iauth/**"/>
+        	<bean class="com.bsoft.mobile.ienm.interceptor.IauthInterceptor"></bean>
+        </mvc:interceptor>
+        
+        &lt;!&ndash; 增加和其他系统对接时自带登录信息的拦截器 &ndash;&gt;
+        <mvc:interceptor>
+        	<mvc:mapping path="/noauth/**"/>
+        	<bean class="com.bsoft.mobile.ienm.interceptor.noauthInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+
+
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving
+        up static resources in the ${webappRoot}/resources/ directory -->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+    <mvc:resources mapping="/**" location="/"/>
+
+   <!-- &lt;!&ndash;hessian RPC服务的启动&ndash;&gt;
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" p:order="2"></bean>
+
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"></bean>
+
+    &lt;!&ndash;hessian服务接口暴露&ndash;&gt;
+    &lt;!&ndash;暴露rpc服务接口(通过name映射url方式)&ndash;&gt;
+    <import resource="classpath:hessian-patient.xml"></import>-->
+</beans>
